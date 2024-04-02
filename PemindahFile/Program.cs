@@ -35,6 +35,11 @@ namespace PemindahFile
                 string fileOutput = "";
                 Console.Write("File Output: ");
                 fileOutput = Console.ReadLine();
+                while (File.Exists(fileOutput))
+                {
+                    Console.Write("File already exists, input new file name: ");
+                    fileOutput = Console.ReadLine();
+                }
                 writer = new StreamWriter(fileOutput);
                 Console.Write("Tahun termuda yang tidak mau dipindahkan: ");
                 InputTahun = Console.ReadLine();
@@ -82,11 +87,9 @@ namespace PemindahFile
                 writer.Close();
                 Console.WriteLine("Type 'exit' to exit");
             }
-
         }
         public static void Movefile(string from, string to)
         {
-
             try
             {
                 Console.WriteLine("=============================================================");
