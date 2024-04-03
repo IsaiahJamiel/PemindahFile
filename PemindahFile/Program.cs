@@ -19,15 +19,14 @@ namespace PemindahFile
         static StreamWriter writer;
         static DateTime dateTimeLeast;
         static List<string> Tahuns = new List<string>();
+        static readonly string mode = "2";
         static void Main(string[] args)
         {
-            
-            for (int i = 2001; i<2050; i++)
+            for (int i = 1950; i < 2050; i++)
             {
                 Tahuns.Add(i.ToString());
             }
-            Console.Write("press enter to start");
-            while (Console.ReadLine() != "exit")
+            if (mode == "2")
             {
                 string From = "";
                 string To = "";
@@ -61,31 +60,75 @@ namespace PemindahFile
                 }
                 Console.Write("Copy file To: ");
                 To = Console.ReadLine();
-                if (To[To.Length-1] != '\\' || To[To.Length - 1] != '/')
+                if (To[To.Length - 1] != '\\' || To[To.Length - 1] != '/')
                 {
                     To = To + "\\";
                 }
+            }
+            else if(mode == "1")
+            {
+
+                Console.Write("press enter to start");
+                while (Console.ReadLine() != "exit")
+                {
+                    string From = "";
+                    string To = "";
+                    string InputTahun = "";
+                    string fileOutput = "";
+                    Console.Write("File Output: ");
+                    fileOutput = Console.ReadLine();
+                    while (File.Exists(fileOutput))
+                    {
+                        Console.Write("File already exists, input new file name: ");
+                        fileOutput = Console.ReadLine();
+                    }
+                    writer = new StreamWriter(fileOutput);
+                    Console.Write("Tahun termuda yang tidak mau dipindahkan: ");
+                    InputTahun = Console.ReadLine();
+                    try
+                    {
+                        dateTimeLeast = Convert.ToDateTime($"{InputTahun}-01-01");
+                    }
+                    catch
+                    {
+                        Console.WriteLine("input tahun yang benar!");
+                        continue;
+                    }
+                    Console.Write("Copy file From: ");
+                    From = Console.ReadLine();
+                    if (!Directory.Exists(From))
+                    {
+                        Console.WriteLine("Directory not exists");
+                        continue;
+                    }
+                    Console.Write("Copy file To: ");
+                    To = Console.ReadLine();
+                    if (To[To.Length - 1] != '\\' || To[To.Length - 1] != '/')
+                    {
+                        To = To + "\\";
+                    }
 
 
-                List<string> Dirs = new List<string>();
-                List<string> subfolders = Directory.GetDirectories(From, "*", SearchOption.AllDirectories).ToList();
-                Console.WriteLine("Directory Found :");
-                writer.WriteLine("Directory Found :");
-                subfolders.ForEach(a => Console.WriteLine(a));
-                subfolders.ForEach(a => writer.WriteLine(a));
+                    List<string> Dirs = new List<string>();
+                    List<string> subfolders = Directory.GetDirectories(From, "*", SearchOption.AllDirectories).ToList();
+                    Console.WriteLine("Directory Found :");
+                    writer.WriteLine("Directory Found :");
+                    subfolders.ForEach(a => Console.WriteLine(a));
+                    subfolders.ForEach(a => writer.WriteLine(a));
 
-                List<string> dirFiltered =
-                dirFiltered = subfolders.Where(a => folderValidator(Path.GetFileName(a))).ToList();
-                dirFiltered = RemoveOverlappingDirectories(dirFiltered);
-                writer.WriteLine("Filtered Directory :");
-                Console.WriteLine("Filtered Directory :");
-                dirFiltered.ForEach(a => Console.WriteLine(a));
-                dirFiltered.ForEach(a => writer.WriteLine(a));
-                Console.Write("Press enter to Continue");
-                Console.ReadLine();
-                dirFiltered.ForEach(from => Movefile(from,To));
-                writer.Close();
-                Console.WriteLine("Type 'exit' to exit");
+                    List<string> dirFiltered =
+                    dirFiltered = subfolders.Where(a => folderValidator(Path.GetFileName(a))).ToList();
+                    dirFiltered = RemoveOverlappingDirectories(dirFiltered);
+                    writer.WriteLine("Filtered Directory :");
+                    Console.WriteLine("Filtered Directory :");
+                    dirFiltered.ForEach(a => Console.WriteLine(a));
+                    dirFiltered.ForEach(a => writer.WriteLine(a));
+                    Console.Write("Press enter to Continue");
+                    Console.ReadLine();
+                    dirFiltered.ForEach(from => Movefile(from, To));
+                    writer.Close();
+                    Console.WriteLine("Type 'exit' to exit");
+                }
             }
         }
         public static void Movefile(string from, string to)
